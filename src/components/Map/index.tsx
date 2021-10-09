@@ -52,12 +52,14 @@ const Map = () => {
             "case",
             ["boolean", ["feature-state", "hover"], false],
             0.8,
-            0.5,
+            0.4,
           ],
         },
       });
     });
 
+    // When the user moves their mouse over an area, we'll update the
+    // feature state for the feature under the mouse.
     map.on("mousemove", "countries-layer", (e) => {
       if (e.features.length > 0) {
         if (hoveredAreaRef.current && hoveredAreaRef.current > -1) {
@@ -67,7 +69,7 @@ const Map = () => {
           );
         }
 
-        const _hoveredArea = e.features[0].properties.OBJECTID;
+        const _hoveredArea = e.features[0].id;
         map.setFeatureState(
           { source: "countries-source", id: _hoveredArea },
           { hover: true }
