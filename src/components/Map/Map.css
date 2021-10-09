@@ -15,6 +15,7 @@
   background-color: #404040;
   color: #ffffff;
   z-index: 1 !important;
-  padding: 6px;
+  padding: 12px;
   font-weight: bold;
+  border-radius: 5px;
 }

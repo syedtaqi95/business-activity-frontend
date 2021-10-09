@@ -16,7 +16,7 @@ const Map = () => {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/mapbox/dark-v10",
       center: [lng, lat],
       zoom: zoom,
     });
@@ -25,9 +25,9 @@ const Map = () => {
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("move", () => {
-      setLng(map.getCenter().lng);
-      setLat(map.getCenter().lat);
-      setZoom(map.getZoom());
+      setLng(Number(map.getCenter().lng.toFixed(4)));
+      setLat(Number(map.getCenter().lat.toFixed(4)));
+      setZoom(Number(map.getZoom().toFixed(4)));
     });
 
     // Clean up on unmount
@@ -38,7 +38,7 @@ const Map = () => {
     <div>
       <div className="sidebarStyle">
         <div>
-          <h1>UK Business Activity Visualiser</h1>
+          <h2>💵 UK Business Activity Visualiser</h2>
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
         </div>
       </div>
