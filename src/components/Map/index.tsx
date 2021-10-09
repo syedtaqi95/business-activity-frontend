@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import "./Map.css";
 
 mapboxgl.accessToken =
+  process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
   "pk.eyJ1Ijoic3llZHRhcWk5NSIsImEiOiJja3Vqbm5icHYwbG96Mm9ydnk1cnJlaDZrIn0.qQV61Wku6oqtKMj_Oa-Lew";
 
 const Map = () => {
@@ -20,7 +21,7 @@ const Map = () => {
       center: [lng, lat],
       zoom: zoom,
     });
-
+    
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
