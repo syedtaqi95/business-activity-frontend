@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-const AreaSelector = () => {
-  const [areaLevel, setAreaLevel] = useState("country");
+interface Props {
+  areaLevel: string;
+  setAreaLevel: React.Dispatch<React.SetStateAction<string>>;
+}
 
+const AreaSelector = ({ areaLevel, setAreaLevel }: Props) => {
   const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAreaLevel(e.target.value);
   };
@@ -36,7 +39,7 @@ const AreaSelector = () => {
         />
         District
       </p>
-      <p>Current level: {areaLevel}</p>
+      <p>Current level: {areaLevel[0].toUpperCase() + areaLevel.slice(1)}</p>
     </div>
   );
 };

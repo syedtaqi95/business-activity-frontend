@@ -11,12 +11,20 @@ mapboxgl.accessToken =
 const Map = () => {
   const mapContainerRef = useRef(null);
 
-  const [lng, setLng] = useState(-3.0803);
-  const [lat, setLat] = useState(55.7186);
-  const [zoom, setZoom] = useState(5);
+  const [lng, setLng] = useState(-3.0803); // map longitude
+  const [lat, setLat] = useState(55.7186); // map latitude
+  const [zoom, setZoom] = useState(5); // map zoom
 
-  const [hoveredArea, _setHoveredArea] = useState(null);
+  const [hoveredArea, _setHoveredArea]: [
+    string | number,
+    React.Dispatch<string | number>
+  ] = useState(null);
   const hoveredAreaRef = useRef(hoveredArea);
+
+  const [areaLevel, setAreaLevel]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState("country"); // country, county, district
 
   const setHoveredArea = (data: string | number) => {
     hoveredAreaRef.current = data;
@@ -36,7 +44,7 @@ const Map = () => {
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
-      // Add the geoJSON data
+      // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
         type: "geojson",
         data: countriesGeoJSON as
@@ -138,7 +146,7 @@ const Map = () => {
           Hover over an area to display information about its business
           enterprises
         </p>
-        <AreaSelector />
+        <AreaSelector areaLevel={areaLevel} setAreaLevel={setAreaLevel} />
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>
