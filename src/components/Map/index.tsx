@@ -34,8 +34,8 @@ const Map = () => {
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
-    // Add the geoJSON data
     map.on("load", () => {
+      // Add the geoJSON data
       map.addSource("countries-source", {
         type: "geojson",
         data: countriesGeoJSON as
@@ -59,58 +59,59 @@ const Map = () => {
           ],
         },
       });
-    });
 
-    // When the user moves their mouse over an area, we'll update the
-    // feature state for the feature under the mouse.
-    map.on("mousemove", "countries-layer", (e) => {
-      if (e.features.length > 0) {
-        if (hoveredAreaRef.current && hoveredAreaRef.current > -1) {
+      // When the user moves their mouse over an area, we'll update the
+      // feature state for the feature under the mouse.
+      map.on("mousemove", "countries-layer", (e) => {
+        if (e.features.length > 0) {
+          if (hoveredAreaRef.current && hoveredAreaRef.current > -1) {
+            map.setFeatureState(
+              { source: "countries-source", id: hoveredAreaRef.current },
+              { hover: false }
+            );
+          }
+
+          const _hoveredArea = e.features[0].id;
+          map.setFeatureState(
+            { source: "countries-source", id: _hoveredArea },
+            { hover: true }
+          );
+
+          setHoveredArea(_hoveredArea);
+        }
+      });
+
+      // When the mouse leaves the state-fill layer, update the feature state of the
+      // previously hovered feature.
+      map.on("mouseleave", "countries-layer", function () {
+        if (hoveredAreaRef.current) {
           map.setFeatureState(
             { source: "countries-source", id: hoveredAreaRef.current },
             { hover: false }
           );
         }
+        setHoveredArea(null);
+      });
 
-        const _hoveredArea = e.features[0].id;
-        map.setFeatureState(
-          { source: "countries-source", id: _hoveredArea },
-          { hover: true }
-        );
-
-        setHoveredArea(_hoveredArea);
-      }
+      map.on("move", () => {
+        setLng(Number(map.getCenter().lng.toFixed(4)));
+        setLat(Number(map.getCenter().lat.toFixed(4)));
+        setZoom(Number(map.getZoom().toFixed(4)));
+      });
     });
-
-    // When the mouse leaves the state-fill layer, update the feature state of the
-    // previously hovered feature.
-    map.on("mouseleave", "countries-layer", function () {
-      if (hoveredAreaRef.current) {
-        map.setFeatureState(
-          { source: "countries-source", id: hoveredAreaRef.current },
-          { hover: false }
-        );
-      }
-      setHoveredArea(null);
-    });
-
-    map.on("move", () => {
-      setLng(Number(map.getCenter().lng.toFixed(4)));
-      setLat(Number(map.getCenter().lat.toFixed(4)));
-      setZoom(Number(map.getZoom().toFixed(4)));
-    });
-
-    // Clean up on unmount
-    return () => map.remove();
   }, []);
 
   return (
     <div>
       <div className="sidebarStyle">
-        <div>
-          <h2>💵 UK Business Activity Visualiser</h2>
+        <h2>💵 UK Business Activity Visualiser</h2>
+        <p>
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </div>
+        </p>
+        <p>
+          Hover over an area to display information about its business
+          enterprises
+        </p>
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>
