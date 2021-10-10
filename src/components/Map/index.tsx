@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
 import countriesGeoJSON from "../../data/countries.json";
+import AreaSelector from "../AreaSelector";
 
 mapboxgl.accessToken =
   process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
@@ -113,7 +114,7 @@ const Map = () => {
         setHoveredArea(null);
 
         // Remove the popup and reset the cursor
-        map.getCanvas().style.cursor = '';
+        map.getCanvas().style.cursor = "";
         popup.remove();
       });
 
@@ -137,6 +138,7 @@ const Map = () => {
           Hover over an area to display information about its business
           enterprises
         </p>
+        <AreaSelector />
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>
