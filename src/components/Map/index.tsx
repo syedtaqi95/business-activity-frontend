@@ -17,7 +17,7 @@ const Map = () => {
   const [hoveredArea, _setHoveredArea] = useState(null);
   const hoveredAreaRef = useRef(hoveredArea);
 
-  const setHoveredArea = (data) => {
+  const setHoveredArea = (data: string | number) => {
     hoveredAreaRef.current = data;
     _setHoveredArea(data);
   };
@@ -38,7 +38,10 @@ const Map = () => {
     map.on("load", () => {
       map.addSource("countries-source", {
         type: "geojson",
-        data: countriesGeoJSON as any, // TODO fix TS warning
+        data: countriesGeoJSON as
+          | GeoJSON.Feature<GeoJSON.Geometry>
+          | GeoJSON.FeatureCollection<GeoJSON.Geometry>
+          | string,
       });
 
       map.addLayer({
