@@ -17,5 +17,6 @@
   z-index: 1 !important;
   padding: 12px;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 20px;
+  max-width: 420px;
 }
