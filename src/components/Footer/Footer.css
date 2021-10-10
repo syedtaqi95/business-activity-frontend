@@ -1,0 +1,17 @@
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 1 !important;
+  text-align: center;
+  color: #ffffff;
+  font-size: calc(6px + 0.5vw);
+}
+
+.footer a {
+  color: #ffffff;
+}
+
+.footer a:visited {
+  color: #ffffff;
+}
