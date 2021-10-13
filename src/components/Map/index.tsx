@@ -11,10 +11,6 @@ mapboxgl.accessToken =
 const Map = () => {
   const mapContainerRef = useRef(null);
 
-  const [lng, setLng] = useState(-3.0803); // map longitude
-  const [lat, setLat] = useState(55.7186); // map latitude
-  const [zoom, setZoom] = useState(5); // map zoom
-
   const [hoveredArea, _setHoveredArea]: [
     string | number,
     React.Dispatch<string | number>
@@ -36,8 +32,8 @@ const Map = () => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
-      center: [lng, lat],
-      zoom: zoom,
+      center: [-3.0803, 55.7186],
+      zoom: 5,
     });
 
     // Add navigation control (the +/- zoom buttons)
@@ -125,13 +121,6 @@ const Map = () => {
         map.getCanvas().style.cursor = "";
         popup.remove();
       });
-
-      // Update the lat, lng and zoom states when the map moves
-      map.on("move", () => {
-        setLng(Number(map.getCenter().lng.toFixed(4)));
-        setLat(Number(map.getCenter().lat.toFixed(4)));
-        setZoom(Number(map.getZoom().toFixed(4)));
-      });
     });
   }, []);
 
@@ -139,9 +128,6 @@ const Map = () => {
     <div>
       <div className="sidebarStyle">
         <h2>💵 UK Business Activity Visualiser</h2>
-        <p>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </p>
         <p>
           Hover over an area to display information about its business
           enterprises
