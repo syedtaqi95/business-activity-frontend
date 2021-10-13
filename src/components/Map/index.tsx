@@ -47,6 +47,7 @@ const Map = () => {
           | GeoJSON.Feature<GeoJSON.Geometry>
           | GeoJSON.FeatureCollection<GeoJSON.Geometry>
           | string,
+        generateId: true,
       });
 
       map.addLayer({
@@ -59,8 +60,8 @@ const Map = () => {
           "fill-opacity": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            0.8,
-            0.4,
+            0.9,
+            0.1,
           ],
         },
       });
