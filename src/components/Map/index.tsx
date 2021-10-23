@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
-import countriesGeoJSON from "../../data/countries.json";
+import geoJsonData from "../../data/ukgeography.json";
 import AreaSelector from "../AreaSelector";
 
 mapboxgl.accessToken =
@@ -43,7 +43,7 @@ const Map = () => {
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
         type: "geojson",
-        data: countriesGeoJSON as
+        data: geoJsonData as
           | GeoJSON.Feature<GeoJSON.Geometry>
           | GeoJSON.FeatureCollection<GeoJSON.Geometry>
           | string,
@@ -57,6 +57,7 @@ const Map = () => {
         layout: {},
         paint: {
           "fill-color": "#5AA5D7",
+          "fill-outline-color": "#FFFFFF",
           "fill-opacity": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
