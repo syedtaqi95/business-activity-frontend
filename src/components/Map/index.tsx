@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
-import geoJsonData from "../../data/ukgeography.json";
 import UserSettings from "../UserSettings";
+import geoJsonDataService from "../../services/geoJsonData";
 
 mapboxgl.accessToken =
   process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
@@ -27,14 +27,26 @@ const Map = () => {
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("01-03 : Agriculture, forestry & fishing");
 
+  const [geoJsonData, setGeoJsonData] = useState(null);
+
   const setHoveredArea = (data: string | number) => {
     hoveredAreaRef.current = data;
     _setHoveredArea(data);
   };
 
+  let map: mapboxgl.Map = null;
+
+  // Update geoJSON data from server
+  useEffect(() => {
+    geoJsonDataService.getData(areaLevel).then((data) => setGeoJsonData(data));
+    if (map !=  null) {
+      console.log(map.getStyle().layers);
+    }
+  }, [areaLevel]);
+
   useEffect(() => {
     // Initialize map when component mounts
-    const map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
       center: [-3.0803, 55.7186],
@@ -129,15 +141,14 @@ const Map = () => {
         popup.remove();
       });
     });
-  }, []);
+  }, [geoJsonData]);
 
   return (
     <div>
       <div className="sidebarStyle">
         <h2>💵 UK Business Activity Visualiser</h2>
         <p>
-          Select an area to display information about its business
-          enterprises
+          Select an area to display information about its business enterprises
         </p>
         <UserSettings
           areaLevel={areaLevel}
