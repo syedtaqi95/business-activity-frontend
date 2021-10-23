@@ -76,7 +76,7 @@ const Map = () => {
         if (e.features.length > 0) {
           // When the user moves their mouse over an area, we'll update the
           // feature state for the feature under the mouse.
-          if (hoveredAreaRef.current && hoveredAreaRef.current > -1) {
+          if (hoveredAreaRef.current > -1) {
             map.setFeatureState(
               { source: "countries-source", id: hoveredAreaRef.current },
               { hover: false }
@@ -110,7 +110,7 @@ const Map = () => {
       map.on("mouseleave", "countries-layer", () => {
         // When the mouse leaves the state-fill layer, update the feature state of the
         // previously hovered feature.
-        if (hoveredAreaRef.current) {
+        if (hoveredAreaRef.current > -1) {
           map.setFeatureState(
             { source: "countries-source", id: hoveredAreaRef.current },
             { hover: false }
