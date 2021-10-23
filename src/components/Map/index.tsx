@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
 import geoJsonData from "../../data/ukgeography.json";
-import AreaSelector from "../AreaSelector";
+import UserSettings from "../UserSettings";
 
 mapboxgl.accessToken =
   process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
@@ -21,6 +21,11 @@ const Map = () => {
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("country"); // country, county, district
+
+  const [industry, setIndustry]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState("01-03 : Agriculture, forestry & fishing");
 
   const setHoveredArea = (data: string | number) => {
     hoveredAreaRef.current = data;
@@ -75,6 +80,7 @@ const Map = () => {
 
       map.on("mousemove", "countries-layer", (e) => {
         if (e.features.length > 0) {
+          console.log(e.features)
           // When the user moves their mouse over an area, we'll update the
           // feature state for the feature under the mouse.
           if (hoveredAreaRef.current > -1) {
@@ -134,7 +140,12 @@ const Map = () => {
           Hover over an area to display information about its business
           enterprises
         </p>
-        <AreaSelector areaLevel={areaLevel} setAreaLevel={setAreaLevel} />
+        <UserSettings
+          areaLevel={areaLevel}
+          setAreaLevel={setAreaLevel}
+          industry={industry}
+          setIndustry={setIndustry}
+        />
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>

@@ -3,9 +3,11 @@ import React from "react";
 interface Props {
   areaLevel: string;
   setAreaLevel: React.Dispatch<React.SetStateAction<string>>;
+  industry: string;
+  setIndustry: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AreaSelector = ({ areaLevel, setAreaLevel }: Props) => {
+const UserSettings = ({ areaLevel, setAreaLevel }: Props) => {
   const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAreaLevel(e.target.value);
   };
@@ -13,7 +15,7 @@ const AreaSelector = ({ areaLevel, setAreaLevel }: Props) => {
   return (
     <div>
       <p>
-        Show me{" "}
+        Select level{" "}
         <input
           type="radio"
           name="adminRegion"
@@ -40,8 +42,9 @@ const AreaSelector = ({ areaLevel, setAreaLevel }: Props) => {
         District
       </p>
       <p>Current level: {areaLevel[0].toUpperCase() + areaLevel.slice(1)}</p>
+      <p>Select industry</p>
     </div>
   );
 };
 
-export default AreaSelector;
+export default UserSettings;
