@@ -17,6 +17,13 @@ const Map = () => {
   ] = useState(null);
   const hoveredAreaRef = useRef(hoveredArea);
 
+  const setHoveredArea = (data: string | number) => {
+    hoveredAreaRef.current = data;
+    _setHoveredArea(data);
+  };
+
+  const mapRef = useRef(null); // stores the map object
+
   const [areaLevel, setAreaLevel]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
@@ -29,34 +36,37 @@ const Map = () => {
 
   const [geoJsonData, setGeoJsonData] = useState(null);
 
-  const setHoveredArea = (data: string | number) => {
-    hoveredAreaRef.current = data;
-    _setHoveredArea(data);
+  // callback fn to get geoJSON data from server
+  // updates the geoJsonData state
+  const getGeoJsonData = () => {
+    geoJsonDataService.getData(areaLevel).then((data) => {
+      setGeoJsonData(data);
+
+      if (mapRef.current) {
+        const _map = mapRef.current;
+        if (_map.getSource("countries-source")) {
+          _map.getSource("countries-source").setData(data);
+        }
+      }
+    });
   };
-
-  let map: mapboxgl.Map = null;
-
-  // Update geoJSON data from server
-  useEffect(() => {
-    geoJsonDataService.getData(areaLevel).then((data) => setGeoJsonData(data));
-    if (map !=  null) {
-      console.log(map.getStyle().layers);
-    }
-  }, [areaLevel]);
 
   useEffect(() => {
     // Initialize map when component mounts
-    map = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
       center: [-3.0803, 55.7186],
       zoom: 5,
     });
+    mapRef.current = map;
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
+      getGeoJsonData();
+
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
         type: "geojson",
@@ -116,7 +126,6 @@ const Map = () => {
           const coordinates: mapboxgl.LngLat = e.lngLat;
           const popupData = `
             <strong>${e.features[0].properties.CTRY20NM}</strong>
-            <div>Business enterprises: 4,200,000</div>
             `;
 
           // Populate the popup and set its coordinates
@@ -141,7 +150,12 @@ const Map = () => {
         popup.remove();
       });
     });
-  }, [geoJsonData]);
+  }, []);
+
+  // Update geoJSON data when areaLevel changes
+  useEffect(() => {
+    getGeoJsonData();
+  }, [areaLevel]);
 
   return (
     <div>
