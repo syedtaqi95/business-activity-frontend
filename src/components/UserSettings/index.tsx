@@ -1,4 +1,5 @@
 import React from "react";
+import industryGroups from "../../data/industryGroups.json";
 
 interface Props {
   areaLevel: string;
@@ -7,11 +8,12 @@ interface Props {
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const UserSettings = ({ areaLevel, setAreaLevel }: Props) => {
-  const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAreaLevel(e.target.value);
-  };
-
+const UserSettings = ({
+  areaLevel,
+  setAreaLevel,
+  industry,
+  setIndustry,
+}: Props) => {
   return (
     <div>
       <p>
@@ -20,7 +22,7 @@ const UserSettings = ({ areaLevel, setAreaLevel }: Props) => {
           type="radio"
           name="adminRegion"
           value="country"
-          onChange={handleSelection}
+          onChange={(e) => setAreaLevel(e.target.value)}
           checked={areaLevel === "country"}
         />
         Country
@@ -28,7 +30,7 @@ const UserSettings = ({ areaLevel, setAreaLevel }: Props) => {
           type="radio"
           name="adminRegion"
           value="county"
-          onChange={handleSelection}
+          onChange={(e) => setAreaLevel(e.target.value)}
           checked={areaLevel === "county"}
         />
         County
@@ -36,13 +38,23 @@ const UserSettings = ({ areaLevel, setAreaLevel }: Props) => {
           type="radio"
           name="adminRegion"
           value="district"
-          onChange={handleSelection}
+          onChange={(e) => setAreaLevel(e.target.value)}
           checked={areaLevel === "district"}
         />
         District
       </p>
       <p>Current level: {areaLevel[0].toUpperCase() + areaLevel.slice(1)}</p>
-      <p>Select industry</p>
+      <p>
+        Select industry
+        <select id="dropdown" onChange={(e) => setIndustry(e.target.value)}>
+          {industryGroups.groups.map((group, idx) => (
+            <option key={idx} value={group}>
+              {group}
+            </option>
+          ))}
+        </select>
+      </p>
+      <p>Current industry: {industry}</p>
     </div>
   );
 };

@@ -80,7 +80,6 @@ const Map = () => {
 
       map.on("mousemove", "countries-layer", (e) => {
         if (e.features.length > 0) {
-          console.log(e.features)
           // When the user moves their mouse over an area, we'll update the
           // feature state for the feature under the mouse.
           if (hoveredAreaRef.current > -1) {
@@ -137,7 +136,7 @@ const Map = () => {
       <div className="sidebarStyle">
         <h2>💵 UK Business Activity Visualiser</h2>
         <p>
-          Hover over an area to display information about its business
+          Select an area to display information about its business
           enterprises
         </p>
         <UserSettings
