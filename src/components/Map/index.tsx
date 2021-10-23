@@ -4,17 +4,16 @@ import "./Map.css";
 import UserSettings from "../UserSettings";
 import geoJsonDataService from "../../services/geoJsonData";
 
-mapboxgl.accessToken =
-  process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
-  "pk.eyJ1Ijoic3llZHRhcWk5NSIsImEiOiJja3Vqbm5icHYwbG96Mm9ydnk1cnJlaDZrIn0.qQV61Wku6oqtKMj_Oa-Lew";
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
-  const mapContainerRef = useRef(null);
+  const mapContainerRef = useRef(null); // used to create the map on page load
 
   const [hoveredArea, _setHoveredArea]: [
     string | number,
     React.Dispatch<string | number>
-  ] = useState(null);
+  ] = useState(null); // used for the hover effect
+
   const hoveredAreaRef = useRef(hoveredArea);
 
   const setHoveredArea = (data: string | number) => {
@@ -32,12 +31,12 @@ const Map = () => {
   const [industry, setIndustry]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
-  ] = useState("01-03 : Agriculture, forestry & fishing");
+  ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
 
-  const [geoJsonData, setGeoJsonData] = useState(null);
+  const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
   // callback fn to get geoJSON data from server
-  // updates the geoJsonData state
+  // updates the geoJsonData state and map source
   const getGeoJsonData = () => {
     geoJsonDataService.getData(areaLevel).then((data) => {
       setGeoJsonData(data);
@@ -124,8 +123,9 @@ const Map = () => {
 
           // Get the pointer coordinates
           const coordinates: mapboxgl.LngLat = e.lngLat;
+
           const popupData = `
-            <strong>${e.features[0].properties.CTRY20NM}</strong>
+            <strong>${e.features[0].properties.NAME}</strong>
             `;
 
           // Populate the popup and set its coordinates
