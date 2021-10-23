@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
-import countriesGeoJSON from "../../data/countries.json";
+import geoJsonData from "../../data/ukgeography.json";
+import AreaSelector from "../AreaSelector";
 
 mapboxgl.accessToken =
   process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
@@ -10,12 +11,16 @@ mapboxgl.accessToken =
 const Map = () => {
   const mapContainerRef = useRef(null);
 
-  const [lng, setLng] = useState(-3.0803);
-  const [lat, setLat] = useState(55.7186);
-  const [zoom, setZoom] = useState(5);
-
-  const [hoveredArea, _setHoveredArea] = useState(null);
+  const [hoveredArea, _setHoveredArea]: [
+    string | number,
+    React.Dispatch<string | number>
+  ] = useState(null);
   const hoveredAreaRef = useRef(hoveredArea);
+
+  const [areaLevel, setAreaLevel]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState("country"); // country, county, district
 
   const setHoveredArea = (data: string | number) => {
     hoveredAreaRef.current = data;
@@ -27,21 +32,22 @@ const Map = () => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
-      center: [lng, lat],
-      zoom: zoom,
+      center: [-3.0803, 55.7186],
+      zoom: 5,
     });
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
-      // Add the geoJSON data
+      // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
         type: "geojson",
-        data: countriesGeoJSON as
+        data: geoJsonData as
           | GeoJSON.Feature<GeoJSON.Geometry>
           | GeoJSON.FeatureCollection<GeoJSON.Geometry>
           | string,
+        generateId: true,
       });
 
       map.addLayer({
@@ -51,11 +57,12 @@ const Map = () => {
         layout: {},
         paint: {
           "fill-color": "#5AA5D7",
+          "fill-outline-color": "#FFFFFF",
           "fill-opacity": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            0.8,
-            0.4,
+            0.9,
+            0.1,
           ],
         },
       });
@@ -70,7 +77,7 @@ const Map = () => {
         if (e.features.length > 0) {
           // When the user moves their mouse over an area, we'll update the
           // feature state for the feature under the mouse.
-          if (hoveredAreaRef.current && hoveredAreaRef.current > -1) {
+          if (hoveredAreaRef.current > -1) {
             map.setFeatureState(
               { source: "countries-source", id: hoveredAreaRef.current },
               { hover: false }
@@ -104,7 +111,7 @@ const Map = () => {
       map.on("mouseleave", "countries-layer", () => {
         // When the mouse leaves the state-fill layer, update the feature state of the
         // previously hovered feature.
-        if (hoveredAreaRef.current) {
+        if (hoveredAreaRef.current > -1) {
           map.setFeatureState(
             { source: "countries-source", id: hoveredAreaRef.current },
             { hover: false }
@@ -113,15 +120,8 @@ const Map = () => {
         setHoveredArea(null);
 
         // Remove the popup and reset the cursor
-        map.getCanvas().style.cursor = '';
+        map.getCanvas().style.cursor = "";
         popup.remove();
-      });
-
-      // Update the lat, lng and zoom states when the map moves
-      map.on("move", () => {
-        setLng(Number(map.getCenter().lng.toFixed(4)));
-        setLat(Number(map.getCenter().lat.toFixed(4)));
-        setZoom(Number(map.getZoom().toFixed(4)));
       });
     });
   }, []);
@@ -131,12 +131,10 @@ const Map = () => {
       <div className="sidebarStyle">
         <h2>💵 UK Business Activity Visualiser</h2>
         <p>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </p>
-        <p>
           Hover over an area to display information about its business
           enterprises
         </p>
+        <AreaSelector areaLevel={areaLevel} setAreaLevel={setAreaLevel} />
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>
