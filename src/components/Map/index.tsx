@@ -1,30 +1,53 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
-import geoJsonData from "../../data/ukgeography.json";
-import AreaSelector from "../AreaSelector";
+import UserSettings from "../UserSettings";
+import geoJsonDataService from "../../services/geoJsonData";
 
-mapboxgl.accessToken =
-  process.env.REACT_APP_MAPBOX_ACCESS_TOKEN ||
-  "pk.eyJ1Ijoic3llZHRhcWk5NSIsImEiOiJja3Vqbm5icHYwbG96Mm9ydnk1cnJlaDZrIn0.qQV61Wku6oqtKMj_Oa-Lew";
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
-  const mapContainerRef = useRef(null);
+  const mapContainerRef = useRef(null); // used to create the map on page load
 
   const [hoveredArea, _setHoveredArea]: [
     string | number,
     React.Dispatch<string | number>
-  ] = useState(null);
+  ] = useState(null); // used for the hover effect
+
   const hoveredAreaRef = useRef(hoveredArea);
+
+  const setHoveredArea = (data: string | number) => {
+    hoveredAreaRef.current = data;
+    _setHoveredArea(data);
+  };
+
+  const mapRef = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("country"); // country, county, district
 
-  const setHoveredArea = (data: string | number) => {
-    hoveredAreaRef.current = data;
-    _setHoveredArea(data);
+  const [industry, setIndustry]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
+
+  const [geoJsonData, setGeoJsonData] = useState(null); // data from server
+
+  // callback fn to get geoJSON data from server
+  // updates the geoJsonData state and map source
+  const getGeoJsonData = () => {
+    geoJsonDataService.getData(areaLevel).then((data) => {
+      setGeoJsonData(data);
+
+      if (mapRef.current) {
+        const _map = mapRef.current;
+        if (_map.getSource("countries-source")) {
+          _map.getSource("countries-source").setData(data);
+        }
+      }
+    });
   };
 
   useEffect(() => {
@@ -35,11 +58,14 @@ const Map = () => {
       center: [-3.0803, 55.7186],
       zoom: 5,
     });
+    mapRef.current = map;
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
+      getGeoJsonData();
+
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
         type: "geojson",
@@ -97,9 +123,9 @@ const Map = () => {
 
           // Get the pointer coordinates
           const coordinates: mapboxgl.LngLat = e.lngLat;
+
           const popupData = `
-            <strong>${e.features[0].properties.CTRY20NM}</strong>
-            <div>Business enterprises: 4,200,000</div>
+            <strong>${e.features[0].properties.NAME}</strong>
             `;
 
           // Populate the popup and set its coordinates
@@ -126,15 +152,24 @@ const Map = () => {
     });
   }, []);
 
+  // Update geoJSON data when areaLevel changes
+  useEffect(() => {
+    getGeoJsonData();
+  }, [areaLevel]);
+
   return (
     <div>
       <div className="sidebarStyle">
         <h2>💵 UK Business Activity Visualiser</h2>
         <p>
-          Hover over an area to display information about its business
-          enterprises
+          Select an area to display information about its business enterprises
         </p>
-        <AreaSelector areaLevel={areaLevel} setAreaLevel={setAreaLevel} />
+        <UserSettings
+          areaLevel={areaLevel}
+          setAreaLevel={setAreaLevel}
+          industry={industry}
+          setIndustry={setIndustry}
+        />
       </div>
       <div className="map-container" ref={mapContainerRef} />
     </div>
