@@ -1,5 +1,5 @@
-import React from "react";
-import industryGroups from "../../data/industryGroups.json";
+import React, { useState, useEffect } from "react";
+import industryGroupsService from "../../services/industryGroups";
 
 interface Props {
   areaLevel: string;
@@ -14,6 +14,14 @@ const UserSettings = ({
   industry,
   setIndustry,
 }: Props) => {
+  const [industryGroups, setIndustryGroups] = useState(null);
+
+  useEffect(() => {
+    industryGroupsService.getAll().then((data) => {
+      setIndustryGroups(data);
+    });
+  }, []);
+
   return (
     <div>
       <p>
@@ -47,11 +55,13 @@ const UserSettings = ({
       <p>
         Select industry
         <select id="dropdown" onChange={(e) => setIndustry(e.target.value)}>
-          {industryGroups.groups.map((group, idx) => (
-            <option key={idx} value={group}>
-              {group}
-            </option>
-          ))}
+          {industryGroups
+            ? industryGroups.map((group: string, idx: number) => (
+                <option key={idx} value={group}>
+                  {group}
+                </option>
+              ))
+            : null}
         </select>
       </p>
       <p>Current industry: {industry}</p>
