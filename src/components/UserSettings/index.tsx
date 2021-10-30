@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import industryGroupsService from "../../services/industryGroups";
+import React from "react";
 
 interface Props {
   areaLevel: string;
@@ -14,13 +13,25 @@ const UserSettings = ({
   industry,
   setIndustry,
 }: Props) => {
-  const [industryGroups, setIndustryGroups] = useState(null);
-
-  useEffect(() => {
-    industryGroupsService.getAll().then((data) => {
-      setIndustryGroups(data);
-    });
-  }, []);
+  const industryGroups = [
+    "01-03 : Agriculture, forestry & fishing",
+    "05-39 : Production",
+    "41-43 : Construction",
+    "45 : Motor trades",
+    "46 : Wholesale",
+    "47 : Retail",
+    "49-53 : Transport & Storage (inc postal)",
+    "55-56 : Accommodation & food services",
+    "58-63 : Information & communication",
+    "64-66 : Finance & insurance",
+    "68 : Property",
+    "69-75 : Professional, scientific & technical",
+    "77-82 : Business administration & support services",
+    "84 : Public administration & defence",
+    "85 : Education",
+    "86-88 : Health",
+    "90-99 : Arts, entertainment, recreation & other services",
+  ];
 
   return (
     <div>

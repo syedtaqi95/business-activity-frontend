@@ -125,7 +125,7 @@ const Map = () => {
           const coordinates: mapboxgl.LngLat = e.lngLat;
 
           const popupData = `
-            <strong>${e.features[0].properties.NAME}</strong>
+            <strong>${e.features[0].properties.name}</strong>
             `;
 
           // Populate the popup and set its coordinates
