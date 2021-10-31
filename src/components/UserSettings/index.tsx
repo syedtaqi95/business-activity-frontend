@@ -58,6 +58,7 @@ const UserSettings = ({
       <p>
         Select an area to display information about its business enterprises
       </p>
+
       <div>
         <p>
           Select level{" "}
@@ -69,7 +70,11 @@ const UserSettings = ({
             ))}
           </select>
         </p>
-        <p>Current level: {areaLevel}</p>
+        <p>
+          Current level:{" "}
+          {areaLevels.find((areaObj) => areaObj.value === areaLevel).name}
+        </p>
+
         <p>
           Select industry{" "}
           <select onChange={(e) => setIndustry(e.target.value)}>
