@@ -16,7 +16,6 @@ const getData = async (level: number) => {
       level: level,
     }
   );
-  console.log(res.data.data);
   return res.data.data;
 };
 

@@ -24,9 +24,9 @@ const Map = () => {
   const mapRef = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
-    string,
-    React.Dispatch<React.SetStateAction<string>>
-  ] = useState("country"); // country, county, district
+    number,
+    React.Dispatch<React.SetStateAction<number>>
+  ] = useState(4); // country(4), region(5), county(6), district(7)
 
   const [industry, setIndustry]: [
     string,
@@ -42,7 +42,7 @@ const Map = () => {
   // callback fn to get geoJSON data from server
   // updates the geoJsonData state and map source
   const getGeoJsonData = () => {
-    geoJsonDataService.getData(5).then((data) => {
+    geoJsonDataService.getData(areaLevel).then((data) => {
       setGeoJsonData(data);
 
       if (mapRef.current) {

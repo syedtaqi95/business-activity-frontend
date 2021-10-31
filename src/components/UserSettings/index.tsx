@@ -1,8 +1,8 @@
 import React from "react";
 
 interface Props {
-  areaLevel: string;
-  setAreaLevel: React.Dispatch<React.SetStateAction<string>>;
+  areaLevel: number;
+  setAreaLevel: React.Dispatch<React.SetStateAction<number>>;
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -13,6 +13,25 @@ const UserSettings = ({
   industry,
   setIndustry,
 }: Props) => {
+  const areaLevels = [
+    {
+      name: "Country",
+      value: 4,
+    },
+    {
+      name: "Region",
+      value: 5,
+    },
+    {
+      name: "County",
+      value: 6,
+    },
+    {
+      name: "District",
+      value: 7,
+    },
+  ];
+
   const industryGroups = [
     "01-03 : Agriculture, forestry & fishing",
     "05-39 : Production",
@@ -37,42 +56,23 @@ const UserSettings = ({
     <div>
       <p>
         Select level{" "}
-        <input
-          type="radio"
-          name="adminRegion"
-          value="country"
-          onChange={(e) => setAreaLevel(e.target.value)}
-          checked={areaLevel === "country"}
-        />
-        Country
-        <input
-          type="radio"
-          name="adminRegion"
-          value="county"
-          onChange={(e) => setAreaLevel(e.target.value)}
-          checked={areaLevel === "county"}
-        />
-        County
-        <input
-          type="radio"
-          name="adminRegion"
-          value="district"
-          onChange={(e) => setAreaLevel(e.target.value)}
-          checked={areaLevel === "district"}
-        />
-        District
+        <select onChange={(e) => setAreaLevel(Number(e.target.value))}>
+          {areaLevels.map((level) => (
+            <option key={level.value} value={level.value}>
+              {level.name}
+            </option>
+          ))}
+        </select>
       </p>
-      <p>Current level: {areaLevel[0].toUpperCase() + areaLevel.slice(1)}</p>
+      <p>Current level: {areaLevel}</p>
       <p>
-        Select industry
-        <select id="dropdown" onChange={(e) => setIndustry(e.target.value)}>
-          {industryGroups
-            ? industryGroups.map((group: string, idx: number) => (
-                <option key={idx} value={group}>
-                  {group}
-                </option>
-              ))
-            : null}
+        Select industry{" "}
+        <select onChange={(e) => setIndustry(e.target.value)}>
+          {industryGroups.map((group: string, idx: number) => (
+            <option key={idx} value={group}>
+              {group}
+            </option>
+          ))}
         </select>
       </p>
       <p>Current industry: {industry}</p>
