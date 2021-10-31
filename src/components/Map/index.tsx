@@ -35,6 +35,10 @@ const Map = () => {
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   // callback fn to get geoJSON data from server
   // updates the geoJsonData state and map source
   const getGeoJsonData = () => {
@@ -125,7 +129,9 @@ const Map = () => {
           const coordinates: mapboxgl.LngLat = e.lngLat;
 
           const popupData = `
-            <strong>${e.features[0].properties.name}</strong>
+            <strong>${e.features[0].properties.name}</strong><br>
+            <strong>${industry}:</strong>
+            <div>${numberWithCommas(e.features[0].properties[industry])}</div>
             `;
 
           // Populate the popup and set its coordinates
