@@ -42,7 +42,7 @@ const Map = () => {
   // callback fn to get geoJSON data from server
   // updates the geoJsonData state and map source
   const getGeoJsonData = () => {
-    geoJsonDataService.getData(areaLevel).then((data) => {
+    geoJsonDataService.getData(5).then((data) => {
       setGeoJsonData(data);
 
       if (mapRef.current) {

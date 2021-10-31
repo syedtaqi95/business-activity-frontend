@@ -1,9 +1,23 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-const getData = async (level: string) => {
-  const res = await axios.get(`${baseUrl}/geocodes`);
-  return res.data;
+interface GeoCodesResponse {
+  message: string;
+  data:
+    | GeoJSON.Feature<GeoJSON.Geometry>
+    | GeoJSON.FeatureCollection<GeoJSON.Geometry>
+    | string;
+}
+
+const getData = async (level: number) => {
+  const res: AxiosResponse<GeoCodesResponse, string> = await axios.post(
+    `${baseUrl}/api/geocodes`,
+    {
+      level: level,
+    }
+  );
+  console.log(res.data.data);
+  return res.data.data;
 };
 
 const geoJsonDataService = { getData };
