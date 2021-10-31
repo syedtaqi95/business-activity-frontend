@@ -39,8 +39,8 @@ const Map = () => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  // callback fn to get geoJSON data from server
-  // updates the geoJsonData state and map source
+  // callback function to get geoJSON data from server
+  // updates the map source with the new geoJSON data
   const getGeoJsonData = () => {
     geoJsonDataService.getData(areaLevel).then((data) => {
       setGeoJsonData(data);
@@ -54,8 +54,9 @@ const Map = () => {
     });
   };
 
+  // Runs on page load
+  // Sets up the map source and layer and related callback functions
   useEffect(() => {
-    // Initialize map when component mounts
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
@@ -165,18 +166,12 @@ const Map = () => {
 
   return (
     <div>
-      <div className="sidebarStyle">
-        <h2>💵 UK Business Activity Visualiser</h2>
-        <p>
-          Select an area to display information about its business enterprises
-        </p>
-        <UserSettings
-          areaLevel={areaLevel}
-          setAreaLevel={setAreaLevel}
-          industry={industry}
-          setIndustry={setIndustry}
-        />
-      </div>
+      <UserSettings
+        areaLevel={areaLevel}
+        setAreaLevel={setAreaLevel}
+        industry={industry}
+        setIndustry={setIndustry}
+      />
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );

@@ -53,29 +53,35 @@ const UserSettings = ({
   ];
 
   return (
-    <div>
+    <div className="sidebarStyle">
+      <h2>💵 UK Business Activity Visualiser</h2>
       <p>
-        Select level{" "}
-        <select onChange={(e) => setAreaLevel(Number(e.target.value))}>
-          {areaLevels.map((level) => (
-            <option key={level.value} value={level.value}>
-              {level.name}
-            </option>
-          ))}
-        </select>
+        Select an area to display information about its business enterprises
       </p>
-      <p>Current level: {areaLevel}</p>
-      <p>
-        Select industry{" "}
-        <select onChange={(e) => setIndustry(e.target.value)}>
-          {industryGroups.map((group: string, idx: number) => (
-            <option key={idx} value={group}>
-              {group}
-            </option>
-          ))}
-        </select>
-      </p>
-      <p>Current industry: {industry}</p>
+      <div>
+        <p>
+          Select level{" "}
+          <select onChange={(e) => setAreaLevel(Number(e.target.value))}>
+            {areaLevels.map((level) => (
+              <option key={level.value} value={level.value}>
+                {level.name}
+              </option>
+            ))}
+          </select>
+        </p>
+        <p>Current level: {areaLevel}</p>
+        <p>
+          Select industry{" "}
+          <select onChange={(e) => setIndustry(e.target.value)}>
+            {industryGroups.map((group: string, idx: number) => (
+              <option key={idx} value={group}>
+                {group}
+              </option>
+            ))}
+          </select>
+        </p>
+        <p>Current industry: {industry}</p>
+      </div>
     </div>
   );
 };
