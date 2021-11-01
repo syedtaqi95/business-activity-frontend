@@ -77,7 +77,6 @@ const Map = () => {
 
       const popupData = `
       <strong>${e.features[0].properties.name}</strong><br>
-      <strong>${industry}:</strong>
       <div>${numberWithCommas(e.features[0].properties[industry])}</div>
       `;
 
@@ -266,10 +265,6 @@ const Map = () => {
           500000,
           "#4d4fa8",
         ]);
-
-        _map.on("mousemove", "countries-layer", (e) => {
-          mouseMoveCallback(e);
-        });
       }
     }
   }, [industry]);
