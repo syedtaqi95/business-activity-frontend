@@ -9,17 +9,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const Map = () => {
   const mapContainerRef = useRef(null); // used to create the map on page load
 
-  const [hoveredArea, _setHoveredArea]: [
-    string | number,
-    React.Dispatch<string | number>
-  ] = useState(null); // used for the hover effect
-
-  const hoveredAreaRef = useRef(hoveredArea);
-
-  const setHoveredArea = (data: string | number) => {
-    hoveredAreaRef.current = data;
-    _setHoveredArea(data);
-  };
+  const hoveredAreaRef = useRef(null); // used to create the popup hover effect
 
   const mapRef = useRef(null); // stores the map object
 
@@ -167,7 +157,7 @@ const Map = () => {
             { hover: true }
           );
 
-          setHoveredArea(_hoveredArea);
+          hoveredAreaRef.current = _hoveredArea;
 
           // Change the cursor style as a UI indicator.
           map.getCanvas().style.cursor = "pointer";
@@ -196,7 +186,7 @@ const Map = () => {
             { hover: false }
           );
         }
-        setHoveredArea(null);
+        hoveredAreaRef.current = null;
 
         // Remove the popup and reset the cursor
         map.getCanvas().style.cursor = "";
@@ -262,8 +252,6 @@ const Map = () => {
           500000,
           "#4d4fa8",
         ]);
-
-        
       }
     }
   }, [industry]);
