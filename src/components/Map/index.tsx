@@ -13,6 +13,8 @@ const Map = () => {
 
   const mapRef = useRef(null); // stores the map object
 
+  const popupRef = useRef(null);
+
   const [areaLevel, setAreaLevel]: [
     number,
     React.Dispatch<React.SetStateAction<number>>
@@ -42,6 +44,50 @@ const Map = () => {
         }
       }
     });
+  };
+
+  const mouseMoveCallback = (
+    e: mapboxgl.MapMouseEvent & {
+      features?: mapboxgl.MapboxGeoJSONFeature[];
+    } & mapboxgl.EventData
+  ) => {
+    if (e.features.length > 0) {
+      // When the user moves their mouse over an area, we'll update the
+      // feature state for the feature under the mouse.
+      if (hoveredAreaRef.current > -1) {
+        mapRef.current.setFeatureState(
+          { source: "countries-source", id: hoveredAreaRef.current },
+          { hover: false }
+        );
+      }
+
+      const _hoveredArea = e.features[0].id;
+      mapRef.current.setFeatureState(
+        { source: "countries-source", id: _hoveredArea },
+        { hover: true }
+      );
+
+      hoveredAreaRef.current = _hoveredArea;
+
+      // Change the cursor style as a UI indicator.
+      mapRef.current.getCanvas().style.cursor = "pointer";
+
+      // Get the pointer coordinates
+      const coordinates: mapboxgl.LngLat = e.lngLat;
+
+      const popupData = `
+      <strong>${e.features[0].properties.name}</strong><br>
+      <strong>${industry}:</strong>
+      <div>${numberWithCommas(e.features[0].properties[industry])}</div>
+      `;
+
+      // Populate the popup and set its coordinates
+      // based on the feature found.
+      popupRef.current
+        .setLngLat(coordinates)
+        .setHTML(popupData)
+        .addTo(mapRef.current);
+    }
   };
 
   // Runs on page load
@@ -139,42 +185,10 @@ const Map = () => {
         closeButton: false,
         closeOnClick: false,
       });
+      popupRef.current = popup;
 
       map.on("mousemove", "countries-layer", (e) => {
-        if (e.features.length > 0) {
-          // When the user moves their mouse over an area, we'll update the
-          // feature state for the feature under the mouse.
-          if (hoveredAreaRef.current > -1) {
-            map.setFeatureState(
-              { source: "countries-source", id: hoveredAreaRef.current },
-              { hover: false }
-            );
-          }
-
-          const _hoveredArea = e.features[0].id;
-          map.setFeatureState(
-            { source: "countries-source", id: _hoveredArea },
-            { hover: true }
-          );
-
-          hoveredAreaRef.current = _hoveredArea;
-
-          // Change the cursor style as a UI indicator.
-          map.getCanvas().style.cursor = "pointer";
-
-          // Get the pointer coordinates
-          const coordinates: mapboxgl.LngLat = e.lngLat;
-
-          const popupData = `
-            <strong>${e.features[0].properties.name}</strong><br>
-            <strong>${industry}:</strong>
-            <div>${numberWithCommas(e.features[0].properties[industry])}</div>
-            `;
-
-          // Populate the popup and set its coordinates
-          // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(popupData).addTo(map);
-        }
+        mouseMoveCallback(e);
       });
 
       map.on("mouseleave", "countries-layer", () => {
@@ -252,6 +266,10 @@ const Map = () => {
           500000,
           "#4d4fa8",
         ]);
+
+        _map.on("mousemove", "countries-layer", (e) => {
+          mouseMoveCallback(e);
+        });
       }
     }
   }, [industry]);
