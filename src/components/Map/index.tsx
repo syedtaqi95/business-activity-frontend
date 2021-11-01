@@ -9,35 +9,31 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const Map = () => {
   const mapContainerRef = useRef(null); // used to create the map on page load
 
-  const [hoveredArea, _setHoveredArea]: [
-    string | number,
-    React.Dispatch<string | number>
-  ] = useState(null); // used for the hover effect
-
-  const hoveredAreaRef = useRef(hoveredArea);
-
-  const setHoveredArea = (data: string | number) => {
-    hoveredAreaRef.current = data;
-    _setHoveredArea(data);
-  };
+  const hoveredAreaRef = useRef(null); // used to create the popup hover effect
 
   const mapRef = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
-    string,
-    React.Dispatch<React.SetStateAction<string>>
-  ] = useState("country"); // country, county, district
+    number,
+    React.Dispatch<React.SetStateAction<number>>
+  ] = useState(4); // country(4), region(5), county(6), district(7)
 
   const [industry, setIndustry]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
 
+  const industryRef = useRef(industry); // used in mousemove callback to always uses the latest industry
+
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
-  // callback fn to get geoJSON data from server
-  // updates the geoJsonData state and map source
-  const getGeoJsonData = () => {
+  const numberWithCommas = (x: number) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  // callback function to get geoJSON data from server
+  // updates the map source with the new geoJSON data
+  const updateGeoJsonData = () => {
     geoJsonDataService.getData(areaLevel).then((data) => {
       setGeoJsonData(data);
 
@@ -50,8 +46,9 @@ const Map = () => {
     });
   };
 
+  // Runs on page load
+  // Sets up the map source and layer and related callback functions
   useEffect(() => {
-    // Initialize map when component mounts
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v10",
@@ -64,7 +61,7 @@ const Map = () => {
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
-      getGeoJsonData();
+      updateGeoJsonData();
 
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
@@ -82,13 +79,59 @@ const Map = () => {
         source: "countries-source",
         layout: {},
         paint: {
-          "fill-color": "#5AA5D7",
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["get", industry],
+            0,
+            "#f75959",
+            250,
+            "#f47657",
+            500,
+            "#f29455",
+            750,
+            "#efb054",
+            1000,
+            "#eccd52",
+            2500,
+            "#e9e851",
+            5000,
+            "#c8e64f",
+            7500,
+            "#a8e24e",
+            10000,
+            "#88df4d",
+            12500,
+            "#6adb4c",
+            15000,
+            "#4dd74b",
+            17500,
+            "#4bd465",
+            20000,
+            "#4ad07e",
+            22500,
+            "#4acc96",
+            25000,
+            "#49c7ad",
+            50000,
+            "#49c3c2",
+            100000,
+            "#49a9bf",
+            200000,
+            "#498fba",
+            300000,
+            "#4976b5",
+            400000,
+            "#4b61af",
+            500000,
+            "#4d4fa8",
+          ],
           "fill-outline-color": "#FFFFFF",
           "fill-opacity": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
             0.9,
-            0.1,
+            0.5,
           ],
         },
       });
@@ -116,7 +159,7 @@ const Map = () => {
             { hover: true }
           );
 
-          setHoveredArea(_hoveredArea);
+          hoveredAreaRef.current = _hoveredArea;
 
           // Change the cursor style as a UI indicator.
           map.getCanvas().style.cursor = "pointer";
@@ -125,12 +168,15 @@ const Map = () => {
           const coordinates: mapboxgl.LngLat = e.lngLat;
 
           const popupData = `
-            <strong>${e.features[0].properties.NAME}</strong>
-            `;
+          <strong>${e.features[0].properties.name}</strong><br>
+          <div>${numberWithCommas(
+            e.features[0].properties[industryRef.current]
+          )}</div>
+          `;
 
           // Populate the popup and set its coordinates
           // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(popupData).addTo(map);
+          popup.setLngLat(coordinates).setHTML(popupData).addTo(mapRef.current);
         }
       });
 
@@ -143,7 +189,7 @@ const Map = () => {
             { hover: false }
           );
         }
-        setHoveredArea(null);
+        hoveredAreaRef.current = null;
 
         // Remove the popup and reset the cursor
         map.getCanvas().style.cursor = "";
@@ -154,23 +200,75 @@ const Map = () => {
 
   // Update geoJSON data when areaLevel changes
   useEffect(() => {
-    getGeoJsonData();
+    updateGeoJsonData();
   }, [areaLevel]);
+
+  // update fill-color and popup data when industry changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const _map = mapRef.current;
+      if (_map.getLayer("countries-layer")) {
+        _map.setPaintProperty("countries-layer", "fill-color", [
+          "interpolate",
+          ["linear"],
+          ["get", industry],
+          0,
+          "#f75959",
+          250,
+          "#f47657",
+          500,
+          "#f29455",
+          750,
+          "#efb054",
+          1000,
+          "#eccd52",
+          2500,
+          "#e9e851",
+          5000,
+          "#c8e64f",
+          7500,
+          "#a8e24e",
+          10000,
+          "#88df4d",
+          12500,
+          "#6adb4c",
+          15000,
+          "#4dd74b",
+          17500,
+          "#4bd465",
+          20000,
+          "#4ad07e",
+          22500,
+          "#4acc96",
+          25000,
+          "#49c7ad",
+          50000,
+          "#49c3c2",
+          100000,
+          "#49a9bf",
+          200000,
+          "#498fba",
+          300000,
+          "#4976b5",
+          400000,
+          "#4b61af",
+          500000,
+          "#4d4fa8",
+        ]);
+      }
+    }
+
+    industryRef.current = industry;
+  }, [industry]);
 
   return (
     <div>
-      <div className="sidebarStyle">
-        <h2>💵 UK Business Activity Visualiser</h2>
-        <p>
-          Select an area to display information about its business enterprises
-        </p>
-        <UserSettings
-          areaLevel={areaLevel}
-          setAreaLevel={setAreaLevel}
-          industry={industry}
-          setIndustry={setIndustry}
-        />
-      </div>
+      <UserSettings
+        areaLevel={areaLevel}
+        setAreaLevel={setAreaLevel}
+        industry={industry}
+        setIndustry={setIndustry}
+      />
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );
