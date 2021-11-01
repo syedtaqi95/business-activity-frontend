@@ -41,7 +41,7 @@ const Map = () => {
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
-  const getGeoJsonData = () => {
+  const updateGeoJsonData = () => {
     geoJsonDataService.getData(areaLevel).then((data) => {
       setGeoJsonData(data);
 
@@ -69,7 +69,7 @@ const Map = () => {
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
-      getGeoJsonData();
+      updateGeoJsonData();
 
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
@@ -133,7 +133,6 @@ const Map = () => {
             "#4b61af",
             500000,
             "#4d4fa8",
-
           ],
           "fill-outline-color": "#FFFFFF",
           "fill-opacity": [
@@ -208,8 +207,66 @@ const Map = () => {
 
   // Update geoJSON data when areaLevel changes
   useEffect(() => {
-    getGeoJsonData();
+    updateGeoJsonData();
   }, [areaLevel]);
+
+  // update fill-color and popup data when industry changes
+  useEffect(() => {
+    if (mapRef.current) {
+      const _map = mapRef.current;
+      if (_map.getLayer("countries-layer")) {
+        _map.setPaintProperty("countries-layer", "fill-color", [
+          "interpolate",
+          ["linear"],
+          ["get", industry],
+          0,
+          "#f75959",
+          250,
+          "#f47657",
+          500,
+          "#f29455",
+          750,
+          "#efb054",
+          1000,
+          "#eccd52",
+          2500,
+          "#e9e851",
+          5000,
+          "#c8e64f",
+          7500,
+          "#a8e24e",
+          10000,
+          "#88df4d",
+          12500,
+          "#6adb4c",
+          15000,
+          "#4dd74b",
+          17500,
+          "#4bd465",
+          20000,
+          "#4ad07e",
+          22500,
+          "#4acc96",
+          25000,
+          "#49c7ad",
+          50000,
+          "#49c3c2",
+          100000,
+          "#49a9bf",
+          200000,
+          "#498fba",
+          300000,
+          "#4976b5",
+          400000,
+          "#4b61af",
+          500000,
+          "#4d4fa8",
+        ]);
+
+        
+      }
+    }
+  }, [industry]);
 
   return (
     <div>
