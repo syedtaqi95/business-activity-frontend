@@ -25,6 +25,8 @@ const Map = () => {
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
 
+  const industryRef = useRef(null);
+
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
   const numberWithCommas = (x) => {
@@ -77,7 +79,7 @@ const Map = () => {
 
       const popupData = `
       <strong>${e.features[0].properties.name}</strong><br>
-      <div>${numberWithCommas(e.features[0].properties[industry])}</div>
+      <div>${numberWithCommas(e.features[0].properties[industryRef.current])}</div>
       `;
 
       // Populate the popup and set its coordinates
@@ -267,6 +269,8 @@ const Map = () => {
         ]);
       }
     }
+
+    industryRef.current = industry;
   }, [industry]);
 
   return (
