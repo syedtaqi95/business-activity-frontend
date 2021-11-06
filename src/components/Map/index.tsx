@@ -2,12 +2,17 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
 import UserSettings from "../UserSettings";
+import Legend from "../Legend";
 import geoJsonDataService from "../../services/geoJsonData";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+mapboxgl.workerClass =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
@@ -50,6 +55,51 @@ const Map = () => {
     });
   };
 
+  const colourInterpolations = [
+    0,
+    "#f75959",
+    250,
+    "#f47657",
+    500,
+    "#f29455",
+    750,
+    "#efb054",
+    1000,
+    "#eccd52",
+    2500,
+    "#e9e851",
+    5000,
+    "#c8e64f",
+    7500,
+    "#a8e24e",
+    10000,
+    "#88df4d",
+    12500,
+    "#6adb4c",
+    15000,
+    "#4dd74b",
+    17500,
+    "#4bd465",
+    20000,
+    "#4ad07e",
+    22500,
+    "#4acc96",
+    25000,
+    "#49c7ad",
+    50000,
+    "#49c3c2",
+    100000,
+    "#49a9bf",
+    200000,
+    "#498fba",
+    300000,
+    "#4976b5",
+    400000,
+    "#4b61af",
+    500000,
+    "#4d4fa8",
+  ];
+
   // Runs on page load
   // Sets up the map source and layer and related callback functions
   useEffect(() => {
@@ -87,48 +137,7 @@ const Map = () => {
             "interpolate",
             ["linear"],
             ["get", industry],
-            0,
-            "#f75959",
-            250,
-            "#f47657",
-            500,
-            "#f29455",
-            750,
-            "#efb054",
-            1000,
-            "#eccd52",
-            2500,
-            "#e9e851",
-            5000,
-            "#c8e64f",
-            7500,
-            "#a8e24e",
-            10000,
-            "#88df4d",
-            12500,
-            "#6adb4c",
-            15000,
-            "#4dd74b",
-            17500,
-            "#4bd465",
-            20000,
-            "#4ad07e",
-            22500,
-            "#4acc96",
-            25000,
-            "#49c7ad",
-            50000,
-            "#49c3c2",
-            100000,
-            "#49a9bf",
-            200000,
-            "#498fba",
-            300000,
-            "#4976b5",
-            400000,
-            "#4b61af",
-            500000,
-            "#4d4fa8",
+            ...colourInterpolations,
           ],
           "fill-outline-color": "#FFFFFF",
           "fill-opacity": [
@@ -216,48 +225,7 @@ const Map = () => {
           "interpolate",
           ["linear"],
           ["get", industry],
-          0,
-          "#f75959",
-          250,
-          "#f47657",
-          500,
-          "#f29455",
-          750,
-          "#efb054",
-          1000,
-          "#eccd52",
-          2500,
-          "#e9e851",
-          5000,
-          "#c8e64f",
-          7500,
-          "#a8e24e",
-          10000,
-          "#88df4d",
-          12500,
-          "#6adb4c",
-          15000,
-          "#4dd74b",
-          17500,
-          "#4bd465",
-          20000,
-          "#4ad07e",
-          22500,
-          "#4acc96",
-          25000,
-          "#49c7ad",
-          50000,
-          "#49c3c2",
-          100000,
-          "#49a9bf",
-          200000,
-          "#498fba",
-          300000,
-          "#4976b5",
-          400000,
-          "#4b61af",
-          500000,
-          "#4d4fa8",
+          ...colourInterpolations,
         ]);
       }
     }
@@ -273,6 +241,7 @@ const Map = () => {
         industry={industry}
         setIndustry={setIndustry}
       />
+      <Legend />
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );
