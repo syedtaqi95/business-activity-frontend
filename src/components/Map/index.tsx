@@ -4,6 +4,7 @@ import "./Map.css";
 import UserSettings from "../UserSettings";
 import Legend from "../Legend";
 import geoJsonDataService from "../../services/geoJsonData";
+import utils from "../../utils";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -35,10 +36,6 @@ const Map = () => {
   const industryRef = useRef(industry); // used in mousemove callback to always uses the latest industry
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
-
-  const numberWithCommas = (x: number) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -182,7 +179,7 @@ const Map = () => {
 
           const popupData = `
           <strong>${e.features[0].properties.name}</strong><br>
-          <div>${numberWithCommas(
+          <div>${utils.numberWithCommas(
             e.features[0].properties[industryRef.current]
           )}</div>
           `;
@@ -241,7 +238,7 @@ const Map = () => {
         industry={industry}
         setIndustry={setIndustry}
       />
-      <Legend />
+      <Legend interpolations={colourInterpolations} />
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );
