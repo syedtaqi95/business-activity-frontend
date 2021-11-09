@@ -208,23 +208,6 @@ const Map = () => {
     });
   }, []);
 
-  // update fill-color and popup data when industry changes
-  useEffect(() => {
-    if (mapRef.current) {
-      const _map = mapRef.current;
-      if (_map.getLayer("countries-layer")) {
-        _map.setPaintProperty("countries-layer", "fill-color", [
-          "interpolate",
-          ["linear"],
-          ["get", industry],
-          ...colourInterpolations,
-        ]);
-      }
-    }
-
-    industryRef.current = industry;
-  }, [industry]);
-
   return (
     <div>
       <UserSettings
@@ -233,6 +216,9 @@ const Map = () => {
         updateGeoJsonData={updateGeoJsonData}
         industry={industry}
         setIndustry={setIndustry}
+        mapRef={mapRef}
+        colourInterpolations={colourInterpolations}
+        industryRef={industryRef}
       />
       <Legend interpolations={colourInterpolations} />
       <div className="map-container" ref={mapContainerRef} />
