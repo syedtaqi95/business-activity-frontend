@@ -6,7 +6,7 @@ interface Props {
   updateGeoJsonData: (newAreaLevel: number) => void;
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
-  mapRef: React.MutableRefObject<any>;
+  mapRef: React.MutableRefObject<mapboxgl.Map>;
   colourInterpolations: (string | number)[];
   industryRef: React.MutableRefObject<string>;
 }
