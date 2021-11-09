@@ -37,17 +37,15 @@ const Map = () => {
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
-  const updateGeoJsonData = (newAreaLevel: number) => {
-    geoJsonDataService.getData(newAreaLevel).then((data) => {
-      setGeoJsonData(data);
-
-      if (mapRef.current) {
-        const _map = mapRef.current;
-        if (_map.getSource("countries-source")) {
-          _map.getSource("countries-source").setData(data);
-        }
+  const updateGeoJsonData = async (newAreaLevel: number) => {
+    const data = await geoJsonDataService.getData(newAreaLevel);
+    setGeoJsonData(data);
+    if (mapRef.current) {
+      const _map = mapRef.current;
+      if (_map.getSource("countries-source")) {
+        _map.getSource("countries-source").setData(data);
       }
-    });
+    }
   };
 
   const colourInterpolations: (string | number)[] = [
