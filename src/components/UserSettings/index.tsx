@@ -2,7 +2,8 @@ import React from "react";
 
 interface Props {
   areaLevel: number;
-  setAreaLevel: React.Dispatch<React.SetStateAction<number>>;
+  setAreaLevel: (value: React.SetStateAction<number>) => void;
+  updateGeoJsonData: (newAreaLevel: number) => void;
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -10,6 +11,7 @@ interface Props {
 const UserSettings = ({
   areaLevel,
   setAreaLevel,
+  updateGeoJsonData,
   industry,
   setIndustry,
 }: Props) => {
@@ -52,6 +54,11 @@ const UserSettings = ({
     "90-99 : Arts, entertainment, recreation & other services",
   ];
 
+  const handleAreaLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAreaLevel(Number(e.target.value));
+    updateGeoJsonData(Number(e.target.value));
+  };
+
   return (
     <div className="sidebarStyle">
       <h2>💵 UK Business Activity Visualiser</h2>
@@ -62,7 +69,7 @@ const UserSettings = ({
       <div>
         <p>
           Select level{" "}
-          <select onChange={(e) => setAreaLevel(Number(e.target.value))}>
+          <select onChange={handleAreaLevelChange}>
             {areaLevels.map((level) => (
               <option key={level.value} value={level.value}>
                 {level.name}

@@ -39,8 +39,8 @@ const Map = () => {
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
-  const updateGeoJsonData = () => {
-    geoJsonDataService.getData(areaLevel).then((data) => {
+  const updateGeoJsonData = (newAreaLevel: number) => {
+    geoJsonDataService.getData(newAreaLevel).then((data) => {
       setGeoJsonData(data);
 
       if (mapRef.current) {
@@ -112,7 +112,7 @@ const Map = () => {
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("load", () => {
-      updateGeoJsonData();
+      updateGeoJsonData(areaLevel);
 
       // Add the geoJSON data as a source and layer
       map.addSource("countries-source", {
@@ -208,11 +208,6 @@ const Map = () => {
     });
   }, []);
 
-  // Update geoJSON data when areaLevel changes
-  useEffect(() => {
-    updateGeoJsonData();
-  }, [areaLevel]);
-
   // update fill-color and popup data when industry changes
   useEffect(() => {
     if (mapRef.current) {
@@ -235,6 +230,7 @@ const Map = () => {
       <UserSettings
         areaLevel={areaLevel}
         setAreaLevel={setAreaLevel}
+        updateGeoJsonData={updateGeoJsonData}
         industry={industry}
         setIndustry={setIndustry}
       />
