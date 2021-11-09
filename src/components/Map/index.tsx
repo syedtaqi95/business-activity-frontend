@@ -15,9 +15,9 @@ mapboxgl.workerClass =
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
-  const mapContainerRef = useRef(null); // used to create the map on page load
+  const mapContainerRef: React.MutableRefObject<HTMLDivElement> = useRef(null); // used to create the map on page load
 
-  const hoveredAreaRef = useRef(null); // used to create the popup hover effect
+  const hoveredAreaRef: React.MutableRefObject<string | number> = useRef(null); // used to create the popup hover effect
 
   const mapRef = useRef(null); // stores the map object
 
@@ -31,7 +31,7 @@ const Map = () => {
     React.Dispatch<React.SetStateAction<string>>
   ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
 
-  const industryRef = useRef(industry); // used in mousemove callback to always uses the latest industry
+  const industryRef: React.MutableRefObject<string> = useRef(industry); // used in mousemove callback to always uses the latest industry
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
@@ -50,7 +50,7 @@ const Map = () => {
     });
   };
 
-  const colourInterpolations = [
+  const colourInterpolations: (string | number)[] = [
     0,
     "#4d4fa8",
     250,
