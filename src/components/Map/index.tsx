@@ -16,9 +16,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
   const mapContainerRef: React.MutableRefObject<HTMLDivElement> = useRef(null); // used to create the map on page load
-
   const hoveredAreaRef: React.MutableRefObject<string | number> = useRef(null); // used to create the popup hover effect
-
   const mapRef = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
@@ -35,6 +33,47 @@ const Map = () => {
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
+  const [colourInterpolations, setColourInterpolations] = useState([
+    500,
+    "#4976b5",
+    1000,
+    "#49a9bf",
+    5000,
+    "#49c7ad",
+    10000,
+    "#4ad07e",
+    15000,
+    "#4dd74b",
+    20000,
+    "#88df4d",
+    25000,
+    "#c8e64f",
+    100000,
+    "#eccd52",
+    300000,
+    "#f29455",
+    500000,
+    "#f75959",
+  ]);
+
+  // find the max value of the current industry in order to create the color interpolation
+  const setNewInterpolations = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const maxBusinesses = geoJsonData.features.reduce((prevFeature, curFeature) =>
+      prevFeature.properties[industry] > curFeature.properties[industry]
+        ? prevFeature
+        : curFeature
+    ).properties[industry];
+
+    const interpolationDistance = Math.round(maxBusinesses / 10);
+
+    const newInterpolations = colourInterpolations.map((el, idx) =>
+      idx % 2 === 0 ? idx * interpolationDistance : el
+    );
+    setColourInterpolations(newInterpolations);
+  };
+
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
   const updateGeoJsonData = async (newAreaLevel: number) => {
@@ -47,51 +86,6 @@ const Map = () => {
       }
     }
   };
-
-  const colourInterpolations: (string | number)[] = [
-    0,
-    "#4d4fa8",
-    250,
-    "#4b61af",
-    500,
-    "#4976b5",
-    750,
-    "#498fba",
-    1000,
-    "#49a9bf",
-    2500,
-    "#49c3c2",
-    5000,
-    "#49c7ad",
-    7500,
-    "#4acc96",
-    10000,
-    "#4ad07e",
-    12500,
-    "#4bd465",
-    15000,
-    "#4dd74b",
-    17500,
-    "#6adb4c",
-    20000,
-    "#88df4d",
-    22500,
-    "#a8e24e",
-    25000,
-    "#c8e64f",
-    50000,
-    "#e9e851",
-    100000,
-    "#eccd52",
-    200000,
-    "#efb054",
-    300000,
-    "#f29455",
-    400000,
-    "#f47657",
-    500000,
-    "#f75959",
-  ];
 
   // Runs on page load
   // Sets up the map source and layer and related callback functions
@@ -215,6 +209,7 @@ const Map = () => {
         mapRef={mapRef}
         colourInterpolations={colourInterpolations}
         industryRef={industryRef}
+        setNewInterpolations={setNewInterpolations}
       />
       <Legend interpolations={colourInterpolations} />
       <div className="map-container" ref={mapContainerRef} />
