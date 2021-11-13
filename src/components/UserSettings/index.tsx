@@ -9,7 +9,6 @@ interface Props {
   mapRef: React.MutableRefObject<mapboxgl.Map>;
   colourInterpolations: (string | number)[];
   industryRef: React.MutableRefObject<string>;
-  setNewInterpolations: () => void;
 }
 
 const UserSettings = ({
@@ -21,7 +20,6 @@ const UserSettings = ({
   mapRef,
   colourInterpolations,
   industryRef,
-  setNewInterpolations,
 }: Props) => {
   const areaLevels = [
     {
@@ -66,7 +64,6 @@ const UserSettings = ({
     const newAreaLevel = Number(e.target.value);
     setAreaLevel(newAreaLevel);
     updateGeoJsonData(newAreaLevel);
-    setNewInterpolations();
   };
 
   const handleIndustryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -83,7 +80,6 @@ const UserSettings = ({
     ]);
 
     industryRef.current = newIndustry;
-    setNewInterpolations();
   };
 
   return (

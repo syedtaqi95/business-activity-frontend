@@ -33,7 +33,7 @@ const Map = () => {
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
-  const [colourInterpolations, setColourInterpolations] = useState([
+  const colourInterpolations = [
     500,
     "#4976b5",
     1000,
@@ -54,25 +54,7 @@ const Map = () => {
     "#f29455",
     500000,
     "#f75959",
-  ]);
-
-  // find the max value of the current industry in order to create the color interpolation
-  const setNewInterpolations = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const maxBusinesses = geoJsonData.features.reduce((prevFeature, curFeature) =>
-      prevFeature.properties[industry] > curFeature.properties[industry]
-        ? prevFeature
-        : curFeature
-    ).properties[industry];
-
-    const interpolationDistance = Math.round(maxBusinesses / 10);
-
-    const newInterpolations = colourInterpolations.map((el, idx) =>
-      idx % 2 === 0 ? idx * interpolationDistance : el
-    );
-    setColourInterpolations(newInterpolations);
-  };
+  ];
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -209,7 +191,6 @@ const Map = () => {
         mapRef={mapRef}
         colourInterpolations={colourInterpolations}
         industryRef={industryRef}
-        setNewInterpolations={setNewInterpolations}
       />
       <Legend interpolations={colourInterpolations} />
       <div className="map-container" ref={mapContainerRef} />
