@@ -1,0 +1,14 @@
+.area-details {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  margin: 12px;
+  background-color: #404040;
+  color: #ffffff;
+  z-index: 1 !important;
+  padding: 12px;
+  font-weight: bold;
+  border-radius: 20px;
+  max-width: 420px;
+  font-size: 12px;
+}

@@ -4,6 +4,7 @@ import "./Map.css";
 import UserSettings from "../UserSettings";
 import Legend from "../Legend";
 import Loader from "../Loader";
+import AreaDetails from "../AreaDetails";
 import geoJsonDataService from "../../services/geoJsonData";
 import utils from "../../utils";
 
@@ -57,7 +58,12 @@ const Map = () => {
     "#f75959",
   ]);
 
-  const [isLoading, setLoading] = useState(false); // used to render the loader component
+  const [isLoading, setLoading]: [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>
+  ] = useState(false); // used to render the loader component
+
+  const [selectedArea, setSelectedArea] = useState(null);
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -188,7 +194,10 @@ const Map = () => {
 
           // Populate the popup and set its coordinates
           // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(popupData).addTo(mapObjectRef.current);
+          popup
+            .setLngLat(coordinates)
+            .setHTML(popupData)
+            .addTo(mapObjectRef.current);
         }
       });
 
@@ -207,6 +216,9 @@ const Map = () => {
         map.getCanvas().style.cursor = "";
         popup.remove();
       });
+
+      // When an area is clicked, save it to selectedArea to display in AreaDetails component
+      map.on("click", "countries-layer", (e) => setSelectedArea(e.features[0]));
     });
   }, []);
 
@@ -223,6 +235,7 @@ const Map = () => {
       />
       <Legend interpolations={colourInterpolations} />
       {isLoading && <Loader />}
+      {selectedArea && <AreaDetails area={selectedArea} />}
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );

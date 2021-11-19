@@ -1,4 +1,5 @@
 import React from "react";
+import "./UserSettings.css";
 
 interface Props {
   areaLevel: number;

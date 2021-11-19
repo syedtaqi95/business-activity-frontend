@@ -5,18 +5,3 @@
   left: 0;
   right: 0;
 }
-
-.sidebarStyle {
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 12px;
-  background-color: #404040;
-  color: #ffffff;
-  z-index: 1 !important;
-  padding: 12px;
-  font-weight: bold;
-  border-radius: 20px;
-  max-width: 420px;
-}
