@@ -18,7 +18,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const Map = () => {
   const mapContainerRef: React.MutableRefObject<HTMLDivElement> = useRef(null); // used to create the map on page load
   const hoveredAreaRef: React.MutableRefObject<string | number> = useRef(null); // used to create the popup hover effect
-  const mapRef = useRef(null); // stores the map object
+  const mapObjectRef = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
     number,
@@ -65,8 +65,8 @@ const Map = () => {
     setLoading(true);
     const data = await geoJsonDataService.getData(newAreaLevel);
     setGeoJsonData(data);
-    if (mapRef.current) {
-      const _map = mapRef.current;
+    if (mapObjectRef.current) {
+      const _map = mapObjectRef.current;
       if (_map.getSource("countries-source")) {
         _map.getSource("countries-source").setData(data);
       }
@@ -90,7 +90,7 @@ const Map = () => {
 
       setColourInterpolations(newInterpolations);
 
-      mapRef.current.setPaintProperty("countries-layer", "fill-color", [
+      mapObjectRef.current.setPaintProperty("countries-layer", "fill-color", [
         "interpolate",
         ["linear"],
         ["get", industry],
@@ -108,7 +108,7 @@ const Map = () => {
       center: [-3.0803, 55.7186],
       zoom: 5,
     });
-    mapRef.current = map;
+    mapObjectRef.current = map;
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
@@ -188,7 +188,7 @@ const Map = () => {
 
           // Populate the popup and set its coordinates
           // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(popupData).addTo(mapRef.current);
+          popup.setLngLat(coordinates).setHTML(popupData).addTo(mapObjectRef.current);
         }
       });
 
@@ -218,7 +218,7 @@ const Map = () => {
         updateGeoJsonData={updateGeoJsonData}
         industry={industry}
         setIndustry={setIndustry}
-        mapRef={mapRef}
+        mapObjectRef={mapObjectRef}
         industryRef={industryRef}
       />
       <Legend interpolations={colourInterpolations} />
