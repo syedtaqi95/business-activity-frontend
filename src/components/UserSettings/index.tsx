@@ -7,7 +7,6 @@ interface Props {
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
   mapRef: React.MutableRefObject<mapboxgl.Map>;
-  colourInterpolations: (string | number)[];
   industryRef: React.MutableRefObject<string>;
 }
 
@@ -17,8 +16,6 @@ const UserSettings = ({
   updateGeoJsonData,
   industry,
   setIndustry,
-  mapRef,
-  colourInterpolations,
   industryRef,
 }: Props) => {
   const areaLevels = [
@@ -70,15 +67,6 @@ const UserSettings = ({
     // update fill-color and popup data when industry changes
     const newIndustry = e.target.value;
     setIndustry(newIndustry);
-
-    const _map = mapRef.current;
-    _map.setPaintProperty("countries-layer", "fill-color", [
-      "interpolate",
-      ["linear"],
-      ["get", newIndustry],
-      ...colourInterpolations,
-    ]);
-
     industryRef.current = newIndustry;
   };
 

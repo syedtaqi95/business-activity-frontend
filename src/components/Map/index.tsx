@@ -33,7 +33,7 @@ const Map = () => {
 
   const [geoJsonData, setGeoJsonData] = useState(null); // data from server
 
-  const colourInterpolations = [
+  const [colourInterpolations, setColourInterpolations] = useState([
     500,
     "#4976b5",
     1000,
@@ -54,7 +54,7 @@ const Map = () => {
     "#f29455",
     500000,
     "#f75959",
-  ];
+  ]);
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -68,6 +68,31 @@ const Map = () => {
       }
     }
   };
+
+  // Update the colour scale based on the max number of businesses
+  useEffect(() => {
+    if (geoJsonData) {
+      const newMaxBusinesses = geoJsonData.features.reduce((prev, cur) =>
+        prev.properties[industry] > cur.properties[industry] ? prev : cur
+      ).properties[industry];
+
+      const interpolationDistance =
+        Math.ceil(Math.round(newMaxBusinesses / 9) / 100) * 100;
+
+      const newInterpolations = colourInterpolations.map((el, idx) =>
+        idx % 2 === 0 ? (idx / 2) * interpolationDistance : el
+      );
+
+      setColourInterpolations(newInterpolations);
+
+      mapRef.current.setPaintProperty("countries-layer", "fill-color", [
+        "interpolate",
+        ["linear"],
+        ["get", industry],
+        ...newInterpolations,
+      ]);
+    }
+  }, [geoJsonData, industry]);
 
   // Runs on page load
   // Sets up the map source and layer and related callback functions
@@ -189,7 +214,6 @@ const Map = () => {
         industry={industry}
         setIndustry={setIndustry}
         mapRef={mapRef}
-        colourInterpolations={colourInterpolations}
         industryRef={industryRef}
       />
       <Legend interpolations={colourInterpolations} />
