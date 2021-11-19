@@ -73,7 +73,9 @@ const UserSettings = ({
 
   return (
     <div className="sidebarStyle">
-      <h2>💵 UK Business Activity Visualiser</h2>
+      <h2>
+        <u>💵 UK Business Activity Visualiser</u>
+      </h2>
       <p>
         Select an area to display information about its business enterprises
       </p>

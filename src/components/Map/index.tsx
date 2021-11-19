@@ -63,7 +63,10 @@ const Map = () => {
     React.Dispatch<React.SetStateAction<boolean>>
   ] = useState(false); // used to render the loader component
 
-  const [selectedArea, setSelectedArea] = useState(null); // populated when a user clicks on an area
+  const [selectedArea, setSelectedArea]: [
+    mapboxgl.MapboxGeoJSONFeature,
+    React.Dispatch<mapboxgl.MapboxGeoJSONFeature>
+  ] = useState(null); // populated when a user clicks on an area
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -235,7 +238,9 @@ const Map = () => {
       />
       <Legend interpolations={colourInterpolations} />
       {isLoading && <Loader />}
-      {selectedArea && <AreaDetails area={selectedArea} />}
+      {selectedArea && (
+        <AreaDetails area={selectedArea} setSelectedArea={setSelectedArea} />
+      )}
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );

@@ -12,3 +12,11 @@
   max-width: 420px;
   font-size: 12px;
 }
+
+.close-button {
+  float: right;
+  width: 24px;
+  height: 24px;
+  opacity: 0.3;
+  text-shadow: none;
+}

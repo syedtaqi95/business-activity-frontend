@@ -5,27 +5,30 @@ import utils from "../../utils";
 
 interface Props {
   area: MapboxGeoJSONFeature;
+  setSelectedArea: React.Dispatch<mapboxgl.MapboxGeoJSONFeature>;
 }
 
-const index = ({ area }: Props) => {
-  const filteredProperties = Object.keys(area.properties)
-    .filter((key) => key !== "name" && key !== "id")
-    .reduce((obj, key) => {
-      obj[key] = area.properties[key];
-      return obj;
-    }, {});
-
-  console.log(filteredProperties);
+const index = ({ area, setSelectedArea }: Props) => {
+  // Remove the name and id from the properties object
+  const filteredProperties = Object.keys(area.properties).filter(
+    (key) => key !== "name" && key !== "id"
+  );
 
   return (
     <div className="area-details">
-      <h2>📍 {area.properties.name}</h2>
+      <h2>
+        <u>📍 {area.properties.name}</u>
+        <button
+          className="close-button"
+          onClick={() => setSelectedArea(null)}
+        >X</button>
+      </h2>
       <table>
-        {Object.keys(filteredProperties).map((property) => {
+        {filteredProperties.map((property) => {
           return (
             <tr key={property}>
               <td>{property}</td>
-              <td>{utils.numberWithCommas(filteredProperties[property])}</td>
+              <td>{utils.numberWithCommas(area.properties[property])}</td>
             </tr>
           );
         })}
