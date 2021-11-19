@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import "./Map.css";
 import UserSettings from "../UserSettings";
 import Legend from "../Legend";
+import Loader from "../Loader";
 import geoJsonDataService from "../../services/geoJsonData";
 import utils from "../../utils";
 
@@ -56,9 +57,12 @@ const Map = () => {
     "#f75959",
   ]);
 
+  const [isLoading, setLoading] = useState(false); // used to render the loader component
+
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
   const updateGeoJsonData = async (newAreaLevel: number) => {
+    setLoading(true);
     const data = await geoJsonDataService.getData(newAreaLevel);
     setGeoJsonData(data);
     if (mapRef.current) {
@@ -67,6 +71,7 @@ const Map = () => {
         _map.getSource("countries-source").setData(data);
       }
     }
+    setLoading(false);
   };
 
   // Update the colour scale based on the max number of businesses
@@ -217,6 +222,7 @@ const Map = () => {
         industryRef={industryRef}
       />
       <Legend interpolations={colourInterpolations} />
+      {isLoading && <Loader />}
       <div className="map-container" ref={mapContainerRef} />
     </div>
   );
