@@ -19,14 +19,17 @@ const index = ({ area }: Props) => {
 
   return (
     <div className="area-details">
-      <h2>{area.properties.name}</h2>
-      {Object.keys(filteredProperties).map((property) => {
-        return (
-          <div key={property}>
-            {property}: {utils.numberWithCommas(filteredProperties[property])}
-          </div>
-        );
-      })}
+      <h2>📍 {area.properties.name}</h2>
+      <table>
+        {Object.keys(filteredProperties).map((property) => {
+          return (
+            <tr key={property}>
+              <td>{property}</td>
+              <td>{utils.numberWithCommas(filteredProperties[property])}</td>
+            </tr>
+          );
+        })}
+      </table>
     </div>
   );
 };
