@@ -24,6 +24,7 @@ const index = ({ area, setSelectedArea }: Props) => {
         >X</button>
       </h2>
       <table>
+        <tbody>
         {filteredProperties.map((property) => {
           return (
             <tr key={property}>
@@ -32,6 +33,7 @@ const index = ({ area, setSelectedArea }: Props) => {
             </tr>
           );
         })}
+        </tbody>
       </table>
     </div>
   );
