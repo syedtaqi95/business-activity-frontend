@@ -1,17 +1,23 @@
 import React from "react";
+import "./UserSettings.css";
 
 interface Props {
   areaLevel: number;
-  setAreaLevel: React.Dispatch<React.SetStateAction<number>>;
+  setAreaLevel: (value: React.SetStateAction<number>) => void;
+  updateGeoJsonData: (newAreaLevel: number) => void;
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
+  mapObjectRef: React.MutableRefObject<mapboxgl.Map>;
+  industryRef: React.MutableRefObject<string>;
 }
 
 const UserSettings = ({
   areaLevel,
   setAreaLevel,
+  updateGeoJsonData,
   industry,
   setIndustry,
+  industryRef,
 }: Props) => {
   const areaLevels = [
     {
@@ -52,9 +58,24 @@ const UserSettings = ({
     "90-99 : Arts, entertainment, recreation & other services",
   ];
 
+  const handleAreaLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newAreaLevel = Number(e.target.value);
+    setAreaLevel(newAreaLevel);
+    updateGeoJsonData(newAreaLevel);
+  };
+
+  const handleIndustryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // update fill-color and popup data when industry changes
+    const newIndustry = e.target.value;
+    setIndustry(newIndustry);
+    industryRef.current = newIndustry;
+  };
+
   return (
     <div className="sidebarStyle">
-      <h2>💵 UK Business Activity Visualiser</h2>
+      <h2>
+        <u>💵 UK Business Activity Visualiser</u>
+      </h2>
       <p>
         Select an area to display information about its business enterprises
       </p>
@@ -62,7 +83,7 @@ const UserSettings = ({
       <div>
         <p>
           Select level{" "}
-          <select onChange={(e) => setAreaLevel(Number(e.target.value))}>
+          <select onChange={handleAreaLevelChange}>
             {areaLevels.map((level) => (
               <option key={level.value} value={level.value}>
                 {level.name}
@@ -77,7 +98,7 @@ const UserSettings = ({
 
         <p>
           Select industry{" "}
-          <select onChange={(e) => setIndustry(e.target.value)}>
+          <select onChange={handleIndustryChange}>
             {industryGroups.map((group: string, idx: number) => (
               <option key={idx} value={group}>
                 {group}
