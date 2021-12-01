@@ -70,15 +70,20 @@ const Map = () => {
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
+  // Alerts the user if the network request fails
   const updateGeoJsonData = async (newAreaLevel: number) => {
     setLoading(true);
-    const data = await geoJsonDataService.getData(newAreaLevel);
-    setGeoJsonData(data);
-    if (mapObjectRef.current) {
-      const _map = mapObjectRef.current;
-      if (_map.getSource("countries-source")) {
-        _map.getSource("countries-source").setData(data);
+    try {
+      const data = await geoJsonDataService.getData(newAreaLevel);
+      setGeoJsonData(data);
+      if (mapObjectRef.current) {
+        const _map = mapObjectRef.current;
+        if (_map.getSource("countries-source")) {
+          _map.getSource("countries-source").setData(data);
+        }
       }
+    } catch (e) {
+      alert(e);
     }
     setLoading(false);
   };
@@ -235,6 +240,7 @@ const Map = () => {
         setIndustry={setIndustry}
         mapObjectRef={mapObjectRef}
         industryRef={industryRef}
+        isLoading={isLoading}
       />
       <Legend interpolations={colourInterpolations} />
       {isLoading && <Loader />}
