@@ -9,6 +9,7 @@ interface Props {
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
   mapObjectRef: React.MutableRefObject<mapboxgl.Map>;
   industryRef: React.MutableRefObject<string>;
+  isLoading: boolean;
 }
 
 const UserSettings = ({
@@ -18,6 +19,7 @@ const UserSettings = ({
   industry,
   setIndustry,
   industryRef,
+  isLoading,
 }: Props) => {
   const areaLevels = [
     {
@@ -83,7 +85,7 @@ const UserSettings = ({
       <div>
         <p>
           Select level{" "}
-          <select onChange={handleAreaLevelChange}>
+          <select onChange={handleAreaLevelChange} disabled={isLoading}>
             {areaLevels.map((level) => (
               <option key={level.value} value={level.value}>
                 {level.name}
@@ -93,12 +95,14 @@ const UserSettings = ({
         </p>
         <p>
           Current level:{" "}
-          {areaLevels.find((areaObj) => areaObj.value === areaLevel).name}
+          {isLoading
+            ? "Loading..."
+            : areaLevels.find((areaObj) => areaObj.value === areaLevel).name}
         </p>
 
         <p>
           Select industry{" "}
-          <select onChange={handleIndustryChange}>
+          <select onChange={handleIndustryChange} disabled={isLoading}>
             {industryGroups.map((group: string, idx: number) => (
               <option key={idx} value={group}>
                 {group}
@@ -106,7 +110,7 @@ const UserSettings = ({
             ))}
           </select>
         </p>
-        <p>Current industry: {industry}</p>
+        <p>Current industry:{" "}{isLoading ? "Loading..." : industry}</p>
       </div>
     </div>
   );
