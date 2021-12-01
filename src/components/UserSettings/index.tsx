@@ -10,6 +10,7 @@ interface Props {
   mapObjectRef: React.MutableRefObject<mapboxgl.Map>;
   industryRef: React.MutableRefObject<string>;
   isLoading: boolean;
+  industryGroups: string[];
 }
 
 const UserSettings = ({
@@ -20,6 +21,7 @@ const UserSettings = ({
   setIndustry,
   industryRef,
   isLoading,
+  industryGroups,
 }: Props) => {
   const areaLevels = [
     {
@@ -38,26 +40,6 @@ const UserSettings = ({
       name: "District",
       value: 7,
     },
-  ];
-
-  const industryGroups = [
-    "01-03 : Agriculture, forestry & fishing",
-    "05-39 : Production",
-    "41-43 : Construction",
-    "45 : Motor trades",
-    "46 : Wholesale",
-    "47 : Retail",
-    "49-53 : Transport & Storage (inc postal)",
-    "55-56 : Accommodation & food services",
-    "58-63 : Information & communication",
-    "64-66 : Finance & insurance",
-    "68 : Property",
-    "69-75 : Professional, scientific & technical",
-    "77-82 : Business administration & support services",
-    "84 : Public administration & defence",
-    "85 : Education",
-    "86-88 : Health",
-    "90-99 : Arts, entertainment, recreation & other services",
   ];
 
   const handleAreaLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,14 +85,14 @@ const UserSettings = ({
         <p>
           Select industry{" "}
           <select onChange={handleIndustryChange} disabled={isLoading}>
-            {industryGroups.map((group: string, idx: number) => (
+            {industryGroups && industryGroups.map((group: string, idx: number) => (
               <option key={idx} value={group}>
                 {group}
               </option>
             ))}
           </select>
         </p>
-        <p>Current industry:{" "}{isLoading ? "Loading..." : industry}</p>
+        <p>Current industry: {isLoading ? "Loading..." : industry}</p>
       </div>
     </div>
   );

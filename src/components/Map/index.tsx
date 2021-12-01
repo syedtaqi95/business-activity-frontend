@@ -241,6 +241,13 @@ const Map = () => {
         mapObjectRef={mapObjectRef}
         industryRef={industryRef}
         isLoading={isLoading}
+        industryGroups={
+          geoJsonData
+            ? Object.keys(geoJsonData.features[0].properties).filter(
+                (val) => val !== "name" && val !== "id"
+              )
+            : null
+        }
       />
       <Legend interpolations={colourInterpolations} />
       {isLoading && <Loader />}
