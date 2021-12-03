@@ -5,6 +5,7 @@ import UserSettings from "../UserSettings";
 import Legend from "../Legend";
 import Loader from "../Loader";
 import AreaDetails from "../AreaDetails";
+import Footer from "../Footer";
 import geoJsonDataService from "../../services/geoJsonData";
 import utils from "../../utils";
 
@@ -255,6 +256,7 @@ const Map = () => {
         <AreaDetails area={selectedArea} setSelectedArea={setSelectedArea} />
       )}
       <div className="map-container" ref={mapContainerRef} />
+      <Footer />
     </div>
   );
 };
