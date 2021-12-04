@@ -239,7 +239,6 @@ const Map = () => {
         updateGeoJsonData={updateGeoJsonData}
         industry={industry}
         setIndustry={setIndustry}
-        mapObjectRef={mapObjectRef}
         industryRef={industryRef}
         isLoading={isLoading}
         industryGroups={
