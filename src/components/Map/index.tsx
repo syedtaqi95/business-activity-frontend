@@ -9,10 +9,10 @@ import Footer from "../Footer";
 import geoJsonDataService from "../../services/geoJsonData";
 import utils from "../../utils";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// Set worker class to fix build issue with webpack
 // @ts-ignore
 mapboxgl.workerClass =
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -20,7 +20,7 @@ mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const Map = () => {
   const mapContainerRef: React.MutableRefObject<HTMLDivElement> = useRef(null); // used to create the map on page load
   const hoveredAreaRef: React.MutableRefObject<string | number> = useRef(null); // used to create the popup hover effect
-  const mapObjectRef = useRef(null); // stores the map object
+  const mapObjectRef: React.MutableRefObject<mapboxgl.Map> = useRef(null); // stores the map object
 
   const [areaLevel, setAreaLevel]: [
     number,
@@ -80,6 +80,7 @@ const Map = () => {
       if (mapObjectRef.current) {
         const _map = mapObjectRef.current;
         if (_map.getSource("countries-source")) {
+          // @ts-ignore setData will always exist on
           _map.getSource("countries-source").setData(data);
         }
       }
