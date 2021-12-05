@@ -9,32 +9,36 @@ import Footer from "../Footer";
 import geoJsonDataService from "../../services/geoJsonData";
 import utils from "../../utils";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// Set worker class to fix build issue with webpack
 // @ts-ignore
 mapboxgl.workerClass =
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+if (process.env.REACT_APP_MAPBOX_ACCESS_TOKEN) {
+  mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+}
 
 const Map = () => {
-  const mapContainerRef: React.MutableRefObject<HTMLDivElement> = useRef(null); // used to create the map on page load
-  const hoveredAreaRef: React.MutableRefObject<string | number> = useRef(null); // used to create the popup hover effect
-  const mapObjectRef = useRef(null); // stores the map object
+  const mapContainerRef: React.MutableRefObject<HTMLDivElement | null> =
+    useRef(null); // used to create the map on page load
+  const hoveredAreaRef: React.MutableRefObject<string | number | null> =
+    useRef(null); // used to create the popup hover effect
+  const mapObjectRef: React.MutableRefObject<mapboxgl.Map | null> =
+    useRef(null); // stores the map object
 
-  const [areaLevel, setAreaLevel]: [
-    number,
-    React.Dispatch<React.SetStateAction<number>>
-  ] = useState(4); // country(4), region(5), county(6), district(7)
+  const [areaLevel, setAreaLevel] = useState(4); // country(4), region(5), county(6), district(7)
 
-  const [industry, setIndustry]: [
-    string,
-    React.Dispatch<React.SetStateAction<string>>
-  ] = useState("01-03 : Agriculture, forestry & fishing"); // broad industry groups
+  const [industry, setIndustry] = useState(
+    "01-03 : Agriculture, forestry & fishing"
+  ); // broad industry groups
 
   const industryRef: React.MutableRefObject<string> = useRef(industry); // used in mousemove callback to always uses the latest industry
 
-  const [geoJsonData, setGeoJsonData] = useState(null); // data from server
+  const [geoJsonData, setGeoJsonData]: [
+    GeoJSON.FeatureCollection,
+    React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection>>
+  ] = useState(null); // data from server
 
   const [colourInterpolations, setColourInterpolations] = useState([
     500,
@@ -59,15 +63,9 @@ const Map = () => {
     "#f75959",
   ]);
 
-  const [isLoading, setLoading]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>
-  ] = useState(false); // used to render the loader component
+  const [isLoading, setLoading] = useState(false); // used to render the loader component
 
-  const [selectedArea, setSelectedArea]: [
-    mapboxgl.MapboxGeoJSONFeature,
-    React.Dispatch<mapboxgl.MapboxGeoJSONFeature>
-  ] = useState(null); // populated when a user clicks on an area
+  const [selectedArea, setSelectedArea] = useState(null); // populated when a user clicks on an area
 
   // callback function to get geoJSON data from server
   // updates the map source with the new geoJSON data
@@ -80,6 +78,7 @@ const Map = () => {
       if (mapObjectRef.current) {
         const _map = mapObjectRef.current;
         if (_map.getSource("countries-source")) {
+          // @ts-ignore setData will always exist on
           _map.getSource("countries-source").setData(data);
         }
       }
@@ -239,7 +238,6 @@ const Map = () => {
         updateGeoJsonData={updateGeoJsonData}
         industry={industry}
         setIndustry={setIndustry}
-        mapObjectRef={mapObjectRef}
         industryRef={industryRef}
         isLoading={isLoading}
         industryGroups={

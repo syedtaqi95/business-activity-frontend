@@ -7,7 +7,6 @@ interface Props {
   updateGeoJsonData: (newAreaLevel: number) => void;
   industry: string;
   setIndustry: React.Dispatch<React.SetStateAction<string>>;
-  mapObjectRef: React.MutableRefObject<mapboxgl.Map>;
   industryRef: React.MutableRefObject<string>;
   isLoading: boolean;
   industryGroups: string[];

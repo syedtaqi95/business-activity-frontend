@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/jest-dom": "^5.16.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.23.0",
@@ -43,8 +43,8 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@types/jest": "^26.0.24",
-    "@types/mapbox-gl": "^2.4.2",
-    "@types/react": "^17.0.35",
+    "@types/mapbox-gl": "^2.6.0",
+    "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "json-server": "^0.17.0",
     "prettier": "2.5.0",
