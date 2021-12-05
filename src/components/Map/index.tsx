@@ -77,9 +77,9 @@ const Map = () => {
       setGeoJsonData(data);
       if (mapObjectRef.current) {
         const _map = mapObjectRef.current;
-        if (_map.getSource("countries-source")) {
+        if (_map.getSource("geojson-source")) {
           // @ts-ignore setData will always exist on
-          _map.getSource("countries-source").setData(data);
+          _map.getSource("geojson-source").setData(data);
         }
       }
     } catch (e) {
@@ -104,7 +104,7 @@ const Map = () => {
 
       setColourInterpolations(newInterpolations);
 
-      mapObjectRef.current.setPaintProperty("countries-layer", "fill-color", [
+      mapObjectRef.current.setPaintProperty("geojson-layer", "fill-color", [
         "interpolate",
         ["linear"],
         ["get", industry],
@@ -131,7 +131,7 @@ const Map = () => {
       updateGeoJsonData(areaLevel);
 
       // Add the geoJSON data as a source and layer
-      map.addSource("countries-source", {
+      map.addSource("geojson-source", {
         type: "geojson",
         data: geoJsonData as
           | GeoJSON.Feature<GeoJSON.Geometry>
@@ -141,9 +141,9 @@ const Map = () => {
       });
 
       map.addLayer({
-        id: "countries-layer",
+        id: "geojson-layer",
         type: "fill",
-        source: "countries-source",
+        source: "geojson-source",
         layout: {},
         paint: {
           "fill-color": [
@@ -168,20 +168,20 @@ const Map = () => {
         closeOnClick: false,
       });
 
-      map.on("mousemove", "countries-layer", (e) => {
+      map.on("mousemove", "geojson-layer", (e) => {
         if (e.features.length > 0) {
           // When the user moves their mouse over an area, we'll update the
           // feature state for the feature under the mouse.
           if (hoveredAreaRef.current > -1) {
             map.setFeatureState(
-              { source: "countries-source", id: hoveredAreaRef.current },
+              { source: "geojson-source", id: hoveredAreaRef.current },
               { hover: false }
             );
           }
 
           const _hoveredArea = e.features[0].id;
           map.setFeatureState(
-            { source: "countries-source", id: _hoveredArea },
+            { source: "geojson-source", id: _hoveredArea },
             { hover: true }
           );
 
@@ -209,12 +209,12 @@ const Map = () => {
         }
       });
 
-      map.on("mouseleave", "countries-layer", () => {
+      map.on("mouseleave", "geojson-layer", () => {
         // When the mouse leaves the state-fill layer, update the feature state of the
         // previously hovered feature.
         if (hoveredAreaRef.current > -1) {
           map.setFeatureState(
-            { source: "countries-source", id: hoveredAreaRef.current },
+            { source: "geojson-source", id: hoveredAreaRef.current },
             { hover: false }
           );
         }
@@ -226,7 +226,7 @@ const Map = () => {
       });
 
       // When an area is clicked, save it to selectedArea to display in AreaDetails component
-      map.on("click", "countries-layer", (e) => setSelectedArea(e.features[0]));
+      map.on("click", "geojson-layer", (e) => setSelectedArea(e.features[0]));
     });
   }, []);
 
