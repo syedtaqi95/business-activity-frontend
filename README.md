@@ -4,7 +4,7 @@ A web application to visualise the UK Office of National Statistics (ONS) data o
 
 <img src="https://i.imgur.com/OUafG0I.png"/>
 
-- See the demo [deployed here](https://business-activity-visualiser.herokuapp.com/).
+- See the demo [deployed here](https://business-activity-visualiser.onrender.com/).
 - Deployed along with the backend repository [available here](https://github.com/joeledwardson/business-activity-visualiser/).
 
 ## Built With
